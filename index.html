@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will you like to be my girlfriend?</title>
+    <link href="https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Kosugi&display=swap');
+
+        * {
+            font-family: "Kosugi", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+            color: #ffffff;
+            --main-bg: #ffd1dc;
+        }
+        
+        .kosugi-regular {
+            font-family: "Kosugi", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            background-color: var(--main-bg);
+        }
+        main {
+            width: 100%;
+            height: 50%;
+            position: relative;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        form {
+            position: relative;
+            width: 80%;
+            height: 50%; 
+            top: 30%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .hidden {
+            display: none;
+            visibility: hidden;
+        }
+
+        .btn-cmpt {
+            border-radius: 50%;
+            position: absolute;
+            transform: translate(-50%, -50%);
+            transition: left 1s ease-in-out,
+                        top 1s ease-in-out;
+        }
+
+        button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #submit-btn-cmpt {
+            z-index: 9999;
+        }
+
+        #submit-btn,
+        #no-btn {
+            /* position: absolute; */
+            transition: left 1s ease-in-out,
+                        top 1s ease-in-out;
+            padding: 5px 10px;
+            border: 3px solid #666666;
+            border-radius: 6px;
+        }
+
+        #submit-btn {
+            background-color: green;
+            transition: width 1s ease-in-out,
+                        height 1s ease-in-out;
+        }
+
+        #no-btn {
+            background-color: red;
+        }
+
+        p {
+            margin: 0;
+        }
+
+        .speech-bubble {
+            background-color: #ffffff;
+            padding: 10px;
+            margin: 10px;
+            border: 3px solid #666666;
+            border-radius: 6px;
+        }
+
+        .speech-bubble *,
+        .typed-cursor {
+            color: #000000;
+        }
+
+        .img-container {
+            display: flex;
+            justify-content: center;
+        }
+
+        .bear,
+        .rabbit {
+            width: 20%;
+            display: block;
+            /* margin: auto; */
+        }
+
+        /* img {
+            display: block;
+            position: absolute;
+        } */
+
+        @media screen and (max-width: 500px) {
+            form {
+                height: 40%;
+                top: 25%;
+            }
+        }
+
+    </style>
+    <style>
+        #submit-btn-cmpt {
+            top: 50%;
+            left: 30%;
+        }
+
+        #no-btn-cmpt {
+            top: 50%;
+            left: 70%;
+        }
+    </style>
+    <style>
+        @keyframes imgshake {
+            from {
+                transform: rotate(10deg);
+            }
+
+            to {
+                transform: rotate(-10deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header></header>
+    <main>
+        <div id="speech" style="width: 80%; margin: auto; position: relative;">
+            <p class="speech-bubble"></p>
+            <div class="img-container">
+                <img class="bear" src="./assets/bear-heart.gif" alt="">
+            </div>
+        </div>
+        <form id="form" action="">
+            <div id="submit-btn-cmpt" class="btn-cmpt">
+                <button id="submit-btn">Yes</button>
+            </div>
+            <div id="no-btn-cmpt" class="btn-cmpt">
+                <button id="no-btn">No</button>
+            </div>
+        </form>
+    </main>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
+<script>
+    $('document').ready(function() {
+        console.log(navigator.userAgent);
+        function typedFunc(idx, dialogueType) {
+            let id = idx;
+            const $bubble = $('.speech-bubble');
+            $bubble.children().remove();
+            if (idx > 6) { id = 6; }
+            if (idx >= 0) {
+                $bubble.attr('data-type', dialogueType[id].type);
+                $bubble.append(`<span id=${dialogueType[id].type}></span>`);
+            }
+
+            var typed = new Typed('#' + dialogueType[id].type, {
+                strings: dialogueType[id].dialogue,
+                typeSpeed: dialogueType[id].typeSpeed
+            });
+
+            $('.bear').attr('src', dialogueType[id].gif);
+        }
+
+        function typedYesFunc(dialogue) {
+            const id = 7;
+            const $bubble = $('.speech-bubble');
+            $bubble.children().remove();
+
+            $bubble.attr('data-type', dialogue[id].type);
+            $bubble.append(`<span id=${dialogue[id].type}></span>`);
+
+            var typed = new Typed('#' + dialogue[id].type, {
+                strings: dialogue[id].dialogue,
+                typeSpeed: dialogue[id].typeSpeed
+            });
+
+            $('.bear').attr('src', dialogue[id].gif);
+            $bubble.parent().find('.img-container').append(`<img class="rabbit" src="./assets/rabbit-kiss.gif" alt="" />`);
+        }
+
+        const urlParams = getURLParams();
+        const DEBUG = urlParams.get('debug') || false;
+        const LENGTH_OF_MID_POINT_TO_ITS_AURA = 102;
+        const dialogue = {
+            0: {
+                type: 'intro',
+                dialogue: [
+                    'Hello babyy, I hope you find this well!!', 
+                    'Since we\'ve been dating for awhile now...',
+                    'And you\'ve been bringing me lots of joy in my life.',
+                    'So I would like to pop the question.',
+                    'Will you be my girlfriend? ❤️❤️'
+                ],
+                typeSpeed: 50,
+                gif: './assets/bear-heart.gif'
+            },     
+            1: {
+                type: 'denial',
+                dialogue: [
+                    'WAAAAAA...???', 
+                    'That\'s a misclick right??', 
+                    'You meant to click the other button yea??',
+                    'Here, let me help you out a bit &#128517;&#128517;.'
+                ],
+                typeSpeed: 50,
+                gif: './assets/bear-huh.gif'
+            },
+            2: {
+                type: 'anger',
+                dialogue: [
+                    'HEEEYYYYYYY!!!!!', 
+                    'STOP MESSSING WITH MEEEEE!!!!',
+                    'I THOUGHT YOU HAVE FEELINGS FOR ME!!!!',
+                    'WAS IT JUST ALL LIES???🤬🤬'
+                ],
+                typeSpeed: 20,
+                gif: './assets/bear-angy.gif'
+            },
+            3: {
+                type: 'bargaining',
+                dialogue: [
+                    'Pleaseeeee.....!!',
+                    'What can i do for you to say yes?? 😭😭'
+                ],
+                typeSpeed: 20,
+                gif: './assets/bear-bargain.gif'
+            },
+            4: {
+                type: 'depression',
+                dialogue: [
+                    'I thought we have feelings for each other',
+                    'I felt cheated and I don\'t know how to feel about this 😔😔'
+                ],
+                typeSpeed: 50,
+                gif: './assets/bear-depress.gif'
+            },
+            5: {
+                type: 'acceptance',
+                dialogue: [
+                    'Finee, maybe it isn\'t the right time yet.',
+                    'There\'s still more to learn about each other 😔😔'
+                ],
+                typeSpeed: 50,
+                gif: './assets/bear-accept.gif'
+            },
+            6: {
+                type: 'triggered',
+                dialogue: [
+                    'WHY DO YOU STILL CLICK NO????',
+                    'CLICK YES, BUBYYY!!!'
+                ],
+                typeSpeed: 20,
+                gif: './assets/bear-glare.gif'
+            },
+            7: {
+                type: 'happy',
+                dialogue: [
+                    'YAYYYYYYYYY!!!!!!!!! I\'M SOOOOOO HAPPPPYYYYYYYYY!!!!!!',
+                    'I\'ll see you tonight, bubbbyyy 🥰🥰. I love you!!❤️❤️'
+                ],
+                typeSpeed: 50,
+                gif: './assets/bear-kiss.gif'
+            }
+        };
+        let numNoBtnClicked = 0;
+        let timer = null;
+        let width = parseInt($('#submit-btn').width(), 10); 
+        let height = parseInt($('#submit-btn').height(), 10);
+
+        typedFunc(numNoBtnClicked, dialogue);
+
+        if (DEBUG) {
+            $('#form').css('background-color', 'blueviolet');
+            $('main').css('background-color', 'aqua');
+            $('.btn-cmpt').css('background-color', 'white');
+        }
+        console.log('max_length:', LENGTH_OF_MID_POINT_TO_ITS_AURA);
+        
+        let xPosNoBtn = $('#no-btn-cmpt')[0].offsetLeft;
+        let yPosNoBtn = $('#no-btn-cmpt')[0].offsetTop;
+        let widthForm = $('#no-btn-cmpt')[0].parentNode.clientWidth;
+        let heightForm = $('#no-btn-cmpt')[0].parentNode.clientHeight;
+        
+        $('#no-btn').on('click', function(e) {
+            e.preventDefault();
+            if (numNoBtnClicked < 6) {
+                numNoBtnClicked++;
+                console.log(`No Button Clicked: ${numNoBtnClicked} times.`); 
+            } else {
+                width += parseInt($('#submit-btn').width(), 10); 
+                height += parseInt($('#submit-btn').height(), 10);
+                $('#submit-btn').css({
+                    width: width + 'px',
+                    height: height + 'px'
+                });
+            }
+            
+            const $noBtnCmpt = $('#no-btn-cmpt');
+            
+            xPosNoBtn = $noBtnCmpt[0].offsetLeft;
+            yPosNoBtn = $noBtnCmpt[0].offsetTop;
+            widthForm = $noBtnCmpt[0].parentNode.clientWidth;
+            heightForm = $noBtnCmpt[0].parentNode.clientHeight;
+
+            typedFunc(numNoBtnClicked, dialogue);
+
+            if (timer != null) {
+                clearTimeout(timer);
+                timer = null;
+            }
+
+            if (numNoBtnClicked == 1) { 
+                timer = setTimeout(() => {
+                    changeToRandPos($noBtnCmpt, DEBUG);
+                    $('#submit-btn-cmpt').css({
+                        'top': getPercentagePosFromAbsolutePos(heightForm,yPosNoBtn, DEBUG),
+                        'left': getPercentagePosFromAbsolutePos(widthForm, xPosNoBtn, DEBUG)
+                    });
+                }, 11000);
+            } else {
+                changeToRandPos($noBtnCmpt, DEBUG);
+                $('#submit-btn-cmpt').css({
+                    'top': getPercentagePosFromAbsolutePos(heightForm,yPosNoBtn, DEBUG),
+                    'left': getPercentagePosFromAbsolutePos(widthForm, xPosNoBtn, DEBUG)
+                });
+            }
+            
+        });
+
+        $('#submit-btn').on('click', function(e) {
+            $(this).remove();
+            $('#no-btn').remove();
+
+            typedYesFunc(dialogue);
+        });
+
+        function getDiff(num1, num2, debug) {
+            return Math.abs(num1 - num2);
+        }
+
+        function getDistanceOfTwoVectors(debug) {
+            const xPosNoBtnCmpt = $('#no-btn-cmpt').offset().left;
+            const yPosNoBtnCmpt = $('#no-btn-cmpt').offset().top;
+
+            const xPosNoBtn = $('#no-btn').offset().left;
+            const yPosNoBtn = $('#no-btn').offset().top;
+
+            const xPosMidPointNoBtn = $('#no-btn').offset().left + ($('#no-btn')[0].offsetWidth / 2);
+            const yPosMidPointNoBtn = $('#no-btn').offset().top + ($('#no-btn')[0].offsetHeight / 2);
+
+            const width = Math.abs(xPosMidPointNoBtn - xPosNoBtnCmpt);
+            const height = Math.abs(yPosMidPointNoBtn - yPosNoBtnCmpt);
+
+            const length = Math.sqrt(width*width + height*height);
+
+            return length;
+        }
+
+        function getHypotenuse(width, height, debug) {
+            return Math.sqrt((width*width) + (height*height));
+        } 
+
+        function changeToRandPos($el, debug) {
+            $el.css({
+                'top': getRandInt(97, 3) + '%',
+                'left': getRandInt(97, 3) + '%'
+            });
+
+            if (debug) {
+                console.log(`top = ${$el.css('top')}, left = ${$el.css('left')}`);
+            }
+        }
+
+        function getPercentagePosFromAbsolutePos(len, pos, debug) {
+            if (debug) {
+                console.log(Math.floor(pos/len*100).toString() + '%');
+            }
+            return Math.floor(pos/len*100).toString() + '%';
+        }
+
+        function getRandInt(max, min) {
+            const val = Math.floor(Math.random() * max); 
+            return val >= min ? val.toString() : min.toString();
+        }
+
+        function getURLParams() {
+            try {
+                return new URL(document.location).searchParams;
+            } catch (e) {
+                console.error('error in getParams()');
+                return null;
+            }
+        }
+
+        function getDeviceInfo() {
+
+        }
+
+    });
+</script>
+</html>
